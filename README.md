@@ -1,5 +1,8 @@
 # MetroValencia
 
+[![PyPi Version](https://img.shields.io/pypi/v/MetroValencia.svg?color=forestgreen)](https://pypi.org/project/MetroValencia/)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+
 Python module that retrieves MetroValencia stations details and train's times for a given station.
 
 Data from [Portal de datos abiertos del Ayuntamiento de València](https://valencia.opendatasoft.com) and [Geoportal València](https://geoportal.valencia.es).
