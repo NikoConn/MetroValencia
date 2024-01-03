@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='MetroValencia',
     version='1.0.2',
-    scripts=['./metrovalencia/metrovalencia_cli.py'],
+    scripts=['./metrovalencia/metrovalencia_cli'],
     author='NikoConn',
     description='Api for MetroValencia.',
     long_description=open('README.md', 'r').read(),

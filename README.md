@@ -36,7 +36,7 @@ Retrieve information about train stations:
 ```
 import metrovalencia
 
-# get upcoming arrivals for stop 15
+# get list of stations
 response = metrovalencia.get_stations()
 print(response)
 ```
@@ -50,22 +50,40 @@ Output:
   {'id': 201, 'name': 'TORRE DEL VIRREY', 'lines': [1], 'entrances': [[-0.5419166679787194, 39.56866455016901]]}
 ]
 ```
+Retrieve information about closest stations to given coordinates:
+```
+import metrovalencia
+
+# get closest station to coordinates
+response = metrovalencia.get_closest_stations([39.467520, -0.377058], n=2)
+print(response)
+```
+Output:
+```
+[
+  {'id': 16, 'name': 'XÀTIVA', 'lines': [3, 5, 9], 'entrances': [[39.46749135269451, -0.3759854820376232], [39.46783056273336, -0.3776404255345655], [39.467335133630534, -0.3767647684800705], [39.4672294497781, -0.37632536078820306]]}, 
+  {'id': 51, 'name': 'PL. ESPANYA', 'lines': [1], 'entrances': [[39.46620247730024, -0.38157177623086064], [39.46574865099752, -0.3820898894124665]]}
+]
+
+```
+
 # cli
 
 The repo also includes a python cli with a working example
 
 ```
 $ metrovalencia_cli.py -h
-usage: MetroValencia [-h] [-l] [stationid]
+usage: MetroValencia [-h] [-l] [-c coordinates] [stationid]
 
 This is a cli for using MetroValencia python API
 
 positional arguments:
-  stationid   Id of the station to retrieve times
+  stationid       Id of the station to retrieve times
 
 options:
-  -h, --help  show this help message and exit
-  -l          List stations
+  -h, --help      show this help message and exit
+  -l              List stations
+  -c coordinates  Show closest station to coordinates in format latitude,longitude
 ```
 
 ```
@@ -105,4 +123,11 @@ Quart de poblet (117)
     5 - Aeroport - 13:22
     9 - Alboraia Peris Aragó - 14:59
     9 - Alboraia Peris Aragó - 15:23
+```
+
+```
+$ metrovalencia_cli -c 39.467520,-0.377058 
+Xàtiva (16)
+  Lines: [3, 5, 9]
+  Entrances: [[39.46749135269451, -0.3759854820376232], [39.46783056273336, -0.3776404255345655], [39.467335133630534, -0.3767647684800705], [39.4672294497781, -0.37632536078820306]]
 ```
