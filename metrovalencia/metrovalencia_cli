@@ -21,7 +21,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument('-l', required=False, action='store_true', help='List stations')
-    parser.add_argument('-c', required=False, help='Show closest station to coordinates in format latitude,longitude')
+    parser.add_argument('-c', required=False, metavar='coordinates', help='Show closest station to coordinates in format latitude,longitude')
     parser.add_argument('stationid', nargs='?', type=int, help='Id of the station to retrieve times')
     arguments = parser.parse_args()
     
