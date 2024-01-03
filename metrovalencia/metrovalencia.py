@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import requests
+import math
 import pytz
 
 DATA_URL = 'https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/fgv-bocas/exports/json'
@@ -80,6 +81,57 @@ def get_stations(id_indexed=False):
                 'entrances': []
                 }
         
-        stations[station_id]['entrances'].append(station['geo_shape']['geometry']['coordinates'])
+        #reversed coordinates because data incoming is longitude,latitude instead of latitude,longitude
+        stations[station_id]['entrances'].append(station['geo_shape']['geometry']['coordinates'][::-1])
 
     return stations if id_indexed else list(stations.values())
+
+def get_distance(coord1, coord2):
+    """Distance in meters between two coordinates
+
+    Args:
+        coord1 (list): lat,lon
+        coord2 (list): lat,lon
+
+    Returns:
+        double: Distance in meters.
+    """
+    R = 6373.0
+
+    lat1 = math.radians(coord1[0])
+    lon1 = math.radians(coord1[1])
+    lat2 = math.radians(coord2[0])
+    lon2 = math.radians(coord2[1])
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance = R * c
+
+    return distance * 1000
+
+def get_closest_stations(coordinates, n=1):
+    """Retrieve information about the closest transit stations to a given set of coordinates.
+
+    Args:
+        coordinates (tuple): A tuple representing the geographical coordinates (latitude, longitude) for which the closest stations are to be determined.
+        n (int, optional): The number of closest stations to retrieve. Defaults to 1.
+
+    Returns:
+        list: A list of dictionaries containing details of the closest transit stations. Each dictionary includes:
+        - 'id': The unique identifier of the station.
+        - 'name': The name of the station.
+        - 'lines': A list of integers representing the lines associated with the station.
+        - 'entrances': A list containing the geographical coordinates of different entrances to the station.
+    """
+
+    stations = get_stations(id_indexed=True)
+    distances = {
+        station_id: min([get_distance(x, coordinates) for x in station['entrances']])
+        for station_id, station in stations.items()
+    }
+    ordered_stations = sorted(distances.keys(), key=lambda x:distances[x])
+    return [stations[station_id] for station_id in ordered_stations[:n]]

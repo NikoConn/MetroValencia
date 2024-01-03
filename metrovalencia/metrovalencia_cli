@@ -21,6 +21,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument('-l', required=False, action='store_true', help='List stations')
+    parser.add_argument('-c', required=False, help='Show closest station to coordinates in format latitude,longitude')
     parser.add_argument('stationid', nargs='?', type=int, help='Id of the station to retrieve times')
     arguments = parser.parse_args()
     
@@ -28,6 +29,11 @@ if __name__ == "__main__":
         for x in metrovalencia.get_stations():
             show_station(x)
             print('')
+    elif(arguments.c):
+        coordinates = [float(x) for x in arguments.c.split(',')]
+        assert(len(coordinates) == 2)
+        closest_station = metrovalencia.get_closest_stations(coordinates, n=1)
+        show_station(closest_station[0])
     elif(arguments.stationid):
         stationid = arguments.stationid
         stations = metrovalencia.get_stations(id_indexed=True)
