@@ -72,7 +72,7 @@ Output:
 The repo also includes a python cli with a working example
 
 ```
-$ metrovalencia_cli.py -h
+$ metrovalencia_cli -h
 usage: MetroValencia [-h] [-l] [-c coordinates] [stationid]
 
 This is a cli for using MetroValencia python API
@@ -87,7 +87,7 @@ options:
 ```
 
 ```
-$ metrovalencia_cli.py -l
+$ metrovalencia_cli -l
 Quart de poblet (117)
   Lines: [3, 5, 9]
   Entrances: [[-0.4418805544578805, 39.48108673046481]]
@@ -108,7 +108,7 @@ Torre del virrey (201)
 ```
 
 ```
-$ metrovalencia_cli.py 117
+$ metrovalencia_cli 117
 Quart de poblet (117)
   Lines: [3, 5, 9]
   Entrances: [[-0.4418805544578805, 39.48108673046481]]
