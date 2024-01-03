@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='MetroValencia',
-    version='1.0.2',
+    version='1.1.0',
     scripts=['./metrovalencia/metrovalencia_cli'],
     author='NikoConn',
     description='Api for MetroValencia.',
