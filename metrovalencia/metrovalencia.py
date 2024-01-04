@@ -135,3 +135,54 @@ def get_closest_stations(coordinates, n=1):
     }
     ordered_stations = sorted(distances.keys(), key=lambda x:distances[x])
     return [stations[station_id] for station_id in ordered_stations[:n]]
+
+def get_plan(station1, station2):
+    stations = get_stations(id_indexed=True)
+
+    line_stations = {}
+    for station in stations.values():
+        lines = station['lines']
+        for line in lines:
+            if line not in line_stations.keys():
+                line_stations[line] = []
+            line_stations[line].append(station)
+
+    #BFS
+    queue = list(set([x['line'] for x in get_arrivals(stations[station1]['id'])]))
+    visited = [x for x in queue]
+    # queue = [*stations[station1]['lines']]
+    # visited = [*stations[station1]['lines']]
+    parents = {}
+
+    target = [*stations[station2]['lines']]
+    ending = -1
+    while (len(queue) > 0):
+        print(queue)
+        print(line_stations)
+        line = queue.pop(0)
+        adyacents = line_stations[line]
+        adyacents = [[y,x] for x in adyacents for y in x['lines'] if y not in visited]
+
+        for adyacent, station in adyacents:
+            if adyacent in visited:
+                continue
+            if line not in [x['line'] for x in get_arrivals(station['id'])]:
+                continue
+            visited.append(adyacent)
+            parents[adyacent] = [station, line]
+            queue.append(adyacent)
+
+            if adyacent in target:
+                ending = adyacent
+                queue = []
+                break
+
+    camino = [[ending, stations[station2]]]
+
+    while ending in parents.keys():
+        ending = parents[ending][1]
+        camino.append([ending, parents[ending][0] if ending in parents.keys() else stations[station1]])
+    for [line, station] in camino[::-1]:
+        print('Toma la linea {} en {}'.format(line, station['name']))
+    
+        
