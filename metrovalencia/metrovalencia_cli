@@ -6,7 +6,7 @@ import argparse
 def show_station(station):
     print('{} ({})'.format(station['name'].lower().capitalize(), station['id']))
     print('  Lines: {}'.format(station['lines']))
-    print('  Entrances: {}'.format(station['entrances']))
+    print('  Location: {}'.format(station['location']))
 
 def show_arrival(arrival):
     seconds = int(arrival['arrival_time'] % 60)

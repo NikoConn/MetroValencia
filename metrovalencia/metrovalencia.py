@@ -4,7 +4,7 @@ import requests
 import math
 import pytz
 
-DATA_URL = 'https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/fgv-bocas/exports/json'
+DATA_URL = 'https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/fgv-estacions-estaciones/exports/json?lang=es&timezone=Europe%2FBerlin'
 ARRIVALS_URL = 'https://geoportal.valencia.es/geoportal-services/api/v1/salidas-metro.html?estacion={}'
 
 def get_arrivals(station_id):
@@ -65,24 +65,20 @@ def get_stations(id_indexed=False):
         - 'id': The unique identifier of the station.
         - 'name': The name of the station.
         - 'lines': A list of integers representing the lines associated with the station.
-        - 'entrances': A list containing the geographical coordinates of different entrances to the station.
+        - 'location': The geographical coordinates of the station.
     """
     _stations = requests.get(DATA_URL).json()
 
     stations = {}
     for station in _stations:
-        station_id = int(station['idparada'])
-        
-        if station_id not in stations.keys():
-            stations[station_id] = {
-                'id': station_id, 
-                'name': station['denominacion'],
-                'lines': [int(x) for x in station['lineas'].split(',')],
-                'entrances': []
-                }
-        
-        #reversed coordinates because data incoming is longitude,latitude instead of latitude,longitude
-        stations[station_id]['entrances'].append(station['geo_shape']['geometry']['coordinates'][::-1])
+        station_id = int(station['codigo'])
+
+        stations[station_id] = {
+            'id': station_id, 
+            'name': station['nombre'],
+            'lines': [int(x) for x in station['linea'].split(',')],
+            'location': station['geo_shape']['geometry']['coordinates'][::-1]
+        }
 
     return stations if id_indexed else list(stations.values())
 
@@ -125,12 +121,12 @@ def get_closest_stations(coordinates, n=1):
         - 'id': The unique identifier of the station.
         - 'name': The name of the station.
         - 'lines': A list of integers representing the lines associated with the station.
-        - 'entrances': A list containing the geographical coordinates of different entrances to the station.
+        - 'location': The geographical coordinates of the station.
     """
 
     stations = get_stations(id_indexed=True)
     distances = {
-        station_id: min([get_distance(x, coordinates) for x in station['entrances']])
+        station_id: get_distance(station['location'], coordinates)
         for station_id, station in stations.items()
     }
     ordered_stations = sorted(distances.keys(), key=lambda x:distances[x])
