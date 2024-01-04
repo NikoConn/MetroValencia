@@ -43,11 +43,13 @@ print(response)
 Output:
 ```
 [
-  {'id': 117, 'name': 'QUART DE POBLET', 'lines': [3, 5, 9], 'entrances': [[-0.4418805544578805, 39.48108673046481]]},
-  {'id': 200, 'name': 'FAITANAR', 'lines': [3, 5, 9], 'entrances': [[-0.4331833421365398, 39.47761917024598]]},
+  {'id': 95, 'name': 'Marxalenes', 'lines': [4], 'location': [39.48797229915813, -0.3838368950525468]}, 
+  {'id': 55, 'name': 'Empalme', 'lines': [1, 2, 4], 'location': [39.499576608331175, -0.40210834198203727]}, 
+  
   ...
-  {'id': 122, 'name': 'FRANCISCO CUBELLS', 'lines': [5, 6, 9], 'entrances': [[-0.33397299106717426, 39.463245390702866]]},
-  {'id': 201, 'name': 'TORRE DEL VIRREY', 'lines': [1], 'entrances': [[-0.5419166679787194, 39.56866455016901]]}
+
+  {'id': 101, 'name': 'La Granja', 'lines': [4], 'location': [39.50403217479327, -0.4124779998061252]}, 
+  {'id': 102, 'name': 'Sant Joan', 'lines': [4], 'location': [39.50529102481966, -0.41632398912246604]}
 ]
 ```
 Retrieve information about closest stations to given coordinates:
@@ -61,8 +63,8 @@ print(response)
 Output:
 ```
 [
-  {'id': 16, 'name': 'XÀTIVA', 'lines': [3, 5, 9], 'entrances': [[39.46749135269451, -0.3759854820376232], [39.46783056273336, -0.3776404255345655], [39.467335133630534, -0.3767647684800705], [39.4672294497781, -0.37632536078820306]]}, 
-  {'id': 51, 'name': 'PL. ESPANYA', 'lines': [1], 'entrances': [[39.46620247730024, -0.38157177623086064], [39.46574865099752, -0.3820898894124665]]}
+  {'id': 16, 'name': 'Xàtiva', 'lines': [3, 5, 9], 'location': [39.46718601400712, -0.377375006091083]}, 
+  {'id': 190, 'name': 'Alacant', 'lines': [10], 'location': [39.46472103939357, -0.37747700051225186]}
 ]
 
 ```
@@ -72,7 +74,7 @@ Output:
 The repo also includes a python cli with a working example
 
 ```
-$ metrovalencia_cli.py -h
+$ metrovalencia_cli -h
 usage: MetroValencia [-h] [-l] [-c coordinates] [stationid]
 
 This is a cli for using MetroValencia python API
@@ -87,42 +89,42 @@ options:
 ```
 
 ```
-$ metrovalencia_cli.py -l
-Quart de poblet (117)
-  Lines: [3, 5, 9]
-  Entrances: [[-0.4418805544578805, 39.48108673046481]]
+$ metrovalencia_cli -l
+Marxalenes (95)
+  Lines: [4]
+  Location: [39.48797229915813, -0.3838368950525468]
 
-Faitanar (200)
-  Lines: [3, 5, 9]
-  Entrances: [[-0.4331833421365398, 39.47761917024598]]
+Empalme (55)
+  Lines: [1, 2, 4]
+  Location: [39.499576608331175, -0.40210834198203727]
 
   ...
 
-Francisco cubells (122)
-  Lines: [5, 6, 9]
-  Entrances: [[-0.33397299106717426, 39.463245390702866]]
+Sant joan (102)
+  Lines: [4]
+  Location: [39.50529102481966, -0.41632398912246604]
 
-Torre del virrey (201)
-  Lines: [1]
-  Entrances: [[-0.5419166679787194, 39.56866455016901]]
+Alacant (190)
+  Lines: [10]
+  Location: [39.46472103939357, -0.37747700051225186]
 ```
 
 ```
-$ metrovalencia_cli.py 117
+$ metrovalencia_cli 117
 Quart de poblet (117)
   Lines: [3, 5, 9]
-  Entrances: [[-0.4418805544578805, 39.48108673046481]]
+  Location: [39.48108677099763, -0.44188055413458743]
   Upcoming trains:
-    3 - Aeroport - 02:59
-    5 - Marítim - 02:59
-    5 - Marítim - 03:13
-    3 - Aeroport - 03:16
-    3 - Rafelbunyol - 08:59
-    3 - Rafelbunyol - 09:03
-    5 - Aeroport - 12:59
-    5 - Aeroport - 13:22
-    9 - Alboraia Peris Aragó - 14:59
-    9 - Alboraia Peris Aragó - 15:23
+    3 - Aeroport - 00:09
+    3 - Aeroport - 00:22
+    3 - Aeroport - 03:09
+    5 - Marítim - 03:09
+    5 - Marítim - 03:23
+    3 - Aeroport - 03:26
+    3 - Rafelbunyol - 04:09
+    3 - Rafelbunyol - 04:26
+    3 - Rafelbunyol - 09:09
+    3 - Rafelbunyol - 09:13
 ```
 
 ```
