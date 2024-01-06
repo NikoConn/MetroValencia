@@ -131,3 +131,93 @@ def get_closest_stations(coordinates, n=1):
     }
     ordered_stations = sorted(distances.keys(), key=lambda x:distances[x])
     return [stations[station_id] for station_id in ordered_stations[:n]]
+
+def get_plan(station1, station2, fetch_available_trains=True):
+    """Retrieve a plan for traveling between two stations.
+
+    This function calculates the optimal plan for traveling between two transit stations using a Breadth-First Search (BFS) approach. The plan includes a sequence of stations to visit and the corresponding lines to take.
+
+    Args:
+        station1 (int): The identifier of the starting station.
+        station2 (int): The identifier of the destination station.
+        fetch_available_trains (bool, optional): If True, considers available train lines for planning. This will cause the algorithm to take longer, but will ensure that the route is available. Defaults to True.
+
+    Returns:
+        list: A list of dictionaries representing the plan steps. Each dictionary includes:
+        - 'station': A dictionary with details of the station in the step, including 'id', 'name', 'lines', and 'location'.
+        - 'lines': A list of integers representing the lines to take at the station, applicable only when moving to the next station in the plan.
+    """
+    stations = get_stations(id_indexed=True)
+    line_stations = {}
+    stations_lines = {}
+    for station in stations.values():
+        lines = station['lines']
+        if fetch_available_trains:
+            lines = list(set([x['line'] for x in get_arrivals(station['id'])]))
+        stations_lines[station['id']] = lines
+        for line in lines:
+            if line not in line_stations.keys():
+                line_stations[line] = []
+            line_stations[line].append(station)
+
+    #BFS
+    queue = [station1]
+    visited = [station1]
+    distances = {station1: 0}
+    parents = {}
+
+    while (len(queue) > 0):
+        station_id = queue.pop(0)
+        station = stations[station_id]
+
+        adyacent_stations = [station for line in stations_lines[station['id']] for station in line_stations[line]]
+        for adyacent_station in adyacent_stations:
+            distance = distances[station_id] + get_distance(station['location'], adyacent_station['location'])
+
+            if adyacent_station['id'] not in visited or distances[adyacent_station['id']] > distance:
+                distances[adyacent_station['id']] = distance
+                parents[adyacent_station['id']] = station_id
+                queue.append(adyacent_station['id'])
+                visited.append(adyacent_station['id'])
+
+    # recreate path
+    path = [station2]
+    current_station = station2
+    while parents[current_station] in parents:
+        current_station = parents[current_station]
+        path.append(current_station)
+    path.append(station1)
+    
+    path = path[::-1]
+    steps = []
+    for index, station_id in enumerate(path):
+        steps.append(
+            {
+                'station': stations[station_id],
+                'lines': [x for x in stations_lines[station_id] if x in stations_lines[path[index+1]]] if index < len(path) - 1 else None,
+            }
+        )
+    return steps
+
+def get_plan_coordinates(coords1, coords2, fetch_available_trains=True):
+    """Retrieve a plan for traveling between two sets of coordinates.
+
+    This function calculates the optimal plan for traveling between two sets of coordinates, representing the starting and destination locations. The plan includes a sequence of transit stations to visit and the corresponding lines to take.
+
+    Args:
+        coords1 (tuple): A tuple representing the geographical coordinates (latitude, longitude) of the starting location.
+        coords2 (tuple): A tuple representing the geographical coordinates (latitude, longitude) of the destination location.
+        fetch_available_trains (bool, optional): If True, considers available train lines for planning. This will cause the algorithm to take longer, but will ensure that the route is available. Defaults to True.
+
+    Returns:
+        list: A list of dictionaries representing the plan steps. Each dictionary includes:
+        - 'station': A dictionary with details of the transit station in the step, including 'id', 'name', 'lines', and 'location'.
+        - 'lines': A list of integers representing the lines to take at the station, applicable only when moving to the next station in the plan.
+
+    Note:
+        The 'get_plan' function is then used to calculate the plan between the closest starting and destination stations.
+    """
+    initial_station = get_closest_stations(coords1, 1)[0]['id']
+    final_station = get_closest_stations(coords2, 1)[0]['id']
+
+    return get_plan(initial_station, final_station, fetch_available_trains=fetch_available_trains)
