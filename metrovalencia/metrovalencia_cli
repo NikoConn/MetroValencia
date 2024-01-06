@@ -34,8 +34,9 @@ if __name__ == "__main__":
     )
 
     parser.add_argument('-l', required=False, action='store_true', help='List stations')
-    parser.add_argument('-c', required=False, metavar='coordinates', help='Show closest station to coordinates in format latitude,longitude')
+    parser.add_argument('-c', required=False, metavar='latitude,longitude', help='Show closest station to coordinates in format latitude,longitude')
     parser.add_argument('-t', required=False, metavar='stationid', type=int, help='Id of the station to retrieve times')
+    parser.add_argument('-p', required=False, metavar='stationid,stationid', help='Specify the transit station IDs for planning the route. Provide a comma-separated list of two station IDs, e.g., -p 123,456.')
     arguments = parser.parse_args()
     
     n_args = sum([1 if x else 0 for x in vars(arguments).values()])
@@ -64,5 +65,8 @@ if __name__ == "__main__":
         show_station(station)
         print('  Upcoming trains:')
         [show_arrival(x) for x in metrovalencia.get_arrivals(stationid)]
-
+    if(arguments.p):
+        stationid1, stationid2 = [int(x) for x in arguments.p.split(',')]
+        plan = metrovalencia.get_plan(stationid1, stationid2)
+        show_plan(plan)
     
