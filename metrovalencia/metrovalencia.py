@@ -1,11 +1,8 @@
-from bs4 import BeautifulSoup
-from datetime import datetime
 import requests
 import math
-import pytz
 
 DATA_URL = 'https://valencia.opendatasoft.com/api/explore/v2.1/catalog/datasets/fgv-estacions-estaciones/exports/json?lang=es&timezone=Europe%2FBerlin'
-ARRIVALS_URL = 'https://geoportal.valencia.es/geoportal-services/api/v1/salidas-metro.html?estacion={}'
+ARRIVALS_URL = 'https://www.fgv.es/ap18/api/public/es/api/v1/V/horarios-prevision-3/{}'
 
 def get_arrivals(station_id):
     """Retrieve information about upcoming train arrivals at a specific station.
@@ -21,32 +18,17 @@ def get_arrivals(station_id):
         - 'destination': The destination of the arriving train.
         - 'arrival_time': The time until arrival in seconds.
     """
-    html = requests.get(ARRIVALS_URL.format(station_id)).text
-    soup = BeautifulSoup(html, features="html.parser")
-
-    _arrivals = soup.select('#page > div:nth-child(2) > div')
+    response = requests.get(ARRIVALS_URL.format(station_id)).json()
+    
     arrivals = []
-    for _arrival in _arrivals[1:]:
-        line = int(_arrival.select_one('span:nth-child(2) > span:nth-child(1)').text.split('-')[0].strip())
-        dest = _arrival.select_one('span:nth-child(2) > b').text
+    for prevision in response['previsiones']:
+        for train in prevision['trains']:
+            arrivals.append({
+                'line': prevision['line'],
+                'destination': train['destino'],
+                'arrival_time': train['seconds']
+            })
 
-        now = datetime.now(pytz.country_timezones.get('Europe/Madrid'))
-        arrival_time = datetime.now(pytz.country_timezones.get('Europe/Madrid'))
-
-        arrival_time_text = _arrival.select_one('span:nth-child(2) > span:nth-child(4)').text
-        hour, minute, second = [int(x) for x in arrival_time_text.split(':')]
-        arrival_time = arrival_time.replace(hour=hour, minute=minute, second=second)
-
-        if arrival_time < now:
-            arrival_time = arrival_time + datetime.timedelta(days=1)
-
-        arrival_time = arrival_time - now
-
-        arrivals.append({
-            'line': line, 
-            'destination': dest, 
-            'arrival_time': arrival_time.seconds
-        })
     return arrivals
 
 def get_stations(id_indexed=False):
