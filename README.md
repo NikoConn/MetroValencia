@@ -5,7 +5,7 @@
 
 Python module that retrieves MetroValencia stations details and train's times for a given station.
 
-Data from [Portal de datos abiertos del Ayuntamiento de València](https://valencia.opendatasoft.com) and [Geoportal València](https://geoportal.valencia.es).
+Data from [Portal de datos abiertos del Ayuntamiento de València](https://valencia.opendatasoft.com) and [FGV](https://www.fgv.es).
 
 # Usage
 
