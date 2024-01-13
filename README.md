@@ -68,24 +68,41 @@ Output:
 ]
 
 ```
+Retrieve plan to reach a destination:
+```
+import metrovalencia
+
+# get plan to reach a destination
+response = metrovalencia.get_plan(15, 39, fetch_available_trains=False)
+print(response)
+```
+Output:
+```
+[
+  {'station': {'id': 15, 'name': 'Colón', 'lines': [3, 5, 7, 9], 'location': [39.47014621855607, -0.3709277814305924]}, 'lines': [7]},
+  {'station': {'id': 25, 'name': 'Jesús', 'lines': [1, 2, 7], 'location': [39.45920185236387, -0.38454166105416354]}, 'lines': [1]},
+  {'station': {'id': 39, 'name': "L'Alcúdia", 'lines': [1], 'location': [39.193813363569774, -0.5102638606951693]}, 'lines': None}
+]
+```
 
 # cli
 
 The repo also includes a python cli with a working example
 
 ```
-$ metrovalencia_cli -h
-usage: MetroValencia [-h] [-l] [-c coordinates] [stationid]
+usage: MetroValencia [-h] [-l] [-c latitude,longitude] [-t stationid] [-p stationid,stationid]
 
 This is a cli for using MetroValencia python API
 
-positional arguments:
-  stationid       Id of the station to retrieve times
-
-options:
-  -h, --help      show this help message and exit
-  -l              List stations
-  -c coordinates  Show closest station to coordinates in format latitude,longitude
+optional arguments:
+  -h, --help            show this help message and exit
+  -l                    List stations
+  -c latitude,longitude
+                        Show closest station to coordinates in format latitude,longitude
+  -t stationid          Id of the station to retrieve times
+  -p stationid,stationid
+                        Specify the transit station IDs for planning the route. Provide a comma-separated list of two station IDs, e.g.,
+                        -p 123,456.
 ```
 
 ```
@@ -132,4 +149,9 @@ $ metrovalencia_cli -c 39.467520,-0.377058
 Xàtiva (16)
   Lines: [3, 5, 9]
   Entrances: [[39.46749135269451, -0.3759854820376232], [39.46783056273336, -0.3776404255345655], [39.467335133630534, -0.3767647684800705], [39.4672294497781, -0.37632536078820306]]
+```
+
+```
+$ metrovalencia_cli -p 15,32
+Take line 7 in Colón until Picanya
 ```
