@@ -127,7 +127,7 @@ Alacant (190)
 ```
 
 ```
-$ metrovalencia_cli 117
+$ metrovalencia_cli -t 117
 Quart de poblet (117)
   Lines: [3, 5, 9]
   Location: [39.48108677099763, -0.44188055413458743]
