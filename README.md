@@ -1,11 +1,18 @@
 # MetroValencia
 
-[![PyPi Version](https://img.shields.io/pypi/v/MetroValencia.svg?color=forestgreen)](https://pypi.org/project/MetroValencia/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
 Python module that retrieves MetroValencia stations details and train's times for a given station.
 
 Data from [Portal de datos abiertos del Ayuntamiento de València](https://valencia.opendatasoft.com) and [FGV](https://www.fgv.es).
+
+# Installation
+
+For installing this package in the latest release, just run the following command:
+
+```
+pip install "git+https://github.com/NikoConn/MetroValencia@$(curl -s https://api.github.com/repos/NikoConn/MetroValencia/releases/latest | grep '"tag_name":' | sed -E 's/.*\"([^\"]+)\".*/\1/')"
+```
 
 # Usage
 
